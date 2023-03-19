@@ -48,4 +48,8 @@ app.use('/api/v1', appliedFor);
 
 export default app
 
+app.get('/', (req, res) => {
+    res.send('<h1>Server Is Working</h1>');
+})
+
 app.use(ErrorMiddleware);
