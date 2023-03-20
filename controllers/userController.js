@@ -8,9 +8,9 @@ import crypto from "crypto";
 
 
 export const register = catchAsyncError(async (req, res, next) => {
-  const { name, email, password, phoneNumber } = req.body;
+  const { firstName, lastName, email, password, phoneNumber } = req.body;
 
-  if (!name || !email || !password || !phoneNumber) {
+  if (!firstName || !lastName || !email || !password || !phoneNumber) {
     return next(new ErrorHandler("Please enter all fields", 400));
   }
 
@@ -22,7 +22,8 @@ export const register = catchAsyncError(async (req, res, next) => {
 
   if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
     user = await User.create({
-      name,
+      firstName,
+      lastName,
       email,
       password,
       phoneNumber,
@@ -30,7 +31,8 @@ export const register = catchAsyncError(async (req, res, next) => {
     });
   } else {
     user = await User.create({
-      name,
+      firstName,
+      lastName,
       email,
       password,
       phoneNumber,
