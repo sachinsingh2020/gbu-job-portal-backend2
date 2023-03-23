@@ -33,9 +33,6 @@ export const getNationalResearchDetails = catchAsyncError(async (req, res, next)
 
     const nationalResearchDetails = user.userData.research.nationalResearch;
 
-    if (!nationalResearchDetails) {
-        return next(new ErrorHandler("No National Research Details Found", 404));
-    }
 
     res.status(200).json({
         success: true,
@@ -46,9 +43,6 @@ export const getNationalResearchDetails = catchAsyncError(async (req, res, next)
 export const deleteNationalResearch = catchAsyncError(async (req, res, next) => {
     const nationalResearch = await NationalResearch.findByIdAndDelete(req.params.id);
 
-    if (!nationalResearch) {
-        return next(new ErrorHandler("National Research Details Not Found", 404));
-    }
 
     const user = await User.findById(req.user._id);
     user.userData.research.nationalResearch.pull(nationalResearch._id);
@@ -91,9 +85,6 @@ export const getInterNationalResearchDetails = catchAsyncError(async (req, res, 
 
     const interNationalResearchDetails = user.userData.research.interNationalResearch;
 
-    if (!interNationalResearchDetails) {
-        return next(new ErrorHandler("No InterNational Research Details Found", 404));
-    }
 
     res.status(200).json({
         success: true,
@@ -103,10 +94,6 @@ export const getInterNationalResearchDetails = catchAsyncError(async (req, res, 
 
 export const deleteInterNationalResearch = catchAsyncError(async (req, res, next) => {
     const interNationalResearch = await InterNationalResearch.findByIdAndDelete(req.params.id);
-
-    if (!interNationalResearch) {
-        return next(new ErrorHandler("InterNational Research Details Not Found", 404));
-    }
 
     const user = await User.findById(req.user._id);
     user.userData.research.interNationalResearch.pull(interNationalResearch._id);

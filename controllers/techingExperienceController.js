@@ -41,9 +41,6 @@ export const getTeachingExperienceDetails = catchAsyncError(async (req, res, nex
 
     const teachingExperience = user.userData.teachingExperience;
 
-    if (!teachingExperience || teachingExperience.length === 0) {
-        return next(new ErrorHandler("No Teaching Experience Found", 404));
-    }
 
     res.status(200).json({
         success: true,
@@ -52,18 +49,14 @@ export const getTeachingExperienceDetails = catchAsyncError(async (req, res, nex
 });
 
 export const deleteTeachingExperience = catchAsyncError(async (req, res, next) => {
-    
+
     const teachingExperience = await TeachingExperience.findByIdAndDelete(req.params.id);
-    
-    if (!teachingExperience) {
-        return next(new ErrorHandler("Teaching Experience Not Found", 404));
-    }
-    
+
     const user = await User.findById(req.user._id);
     user.userData.teachingExperience.pull(teachingExperience._id);
-    
+
     await user.save();
-    
+
     res.status(200).json({
         success: true,
         message: "Teaching Experience Deleted Successfully",

@@ -68,7 +68,7 @@ export const createEducationPostGraduation = catchAsyncError(async (req, res, ne
 
     const user = await User.findById(req.user._id).populate("userData.education.postGraduation");
 
-    if(user.userData.education.postGraduation) {
+    if (user.userData.education.postGraduation) {
         await cloudinary.v2.uploader.destroy(user.userData.education.postGraduation.selfAttestedCopy.public_id);
         await PostGraduation.deleteOne({ _id: user.userData.education.postGraduation._id });
     }
@@ -119,7 +119,7 @@ export const createEducationMphil = catchAsyncError(async (req, res, next) => {
 
     const user = await User.findById(req.user._id).populate("userData.education.mPhil");
 
-    if(user.userData.education.mPhil) {
+    if (user.userData.education.mPhil) {
         await cloudinary.v2.uploader.destroy(user.userData.education.mPhil.selfAttestedCopy.public_id);
         await MPhil.deleteOne({ _id: user.userData.education.mPhil._id });
     }
