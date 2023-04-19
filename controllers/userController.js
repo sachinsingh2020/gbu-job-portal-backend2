@@ -14,6 +14,14 @@ export const register = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler("Please enter all fields", 400));
   }
 
+  if(password.length < 6){
+     return next(new ErrorHandler("Password must be at least 6 characters long", 400));
+  }
+
+  if(phoneNumber.length !== 10){
+    return next(new ErrorHandler("Please enter a valid Phone Number", 400));
+  }
+
   let user = await User.findOne({ email });
 
   if (user) {

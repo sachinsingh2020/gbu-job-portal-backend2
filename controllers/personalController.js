@@ -6,10 +6,22 @@ import cloudinary from "cloudinary";
 import { User } from "../models/User.js";
 
 export const createPersonal = catchAsyncError(async (req, res, next) => {
-    const { firstName, lastName, dateOfBirth, gender, maritalStatus, nationality, category, emailAddress, phoneNumber, alternativePhoneNumber, fatherHusbandName, permanentAddress, aadharNumber } = req.body;
+    let { firstName, lastName, dateOfBirth, gender, maritalStatus, nationality, category, emailAddress, phoneNumber, alternativePhoneNumber, fatherHusbandName, permanentAddress, aadharNumber } = req.body;
 
-    if (!firstName || !lastName || !dateOfBirth || !gender || !maritalStatus || !nationality || !category || !emailAddress || !phoneNumber || !alternativePhoneNumber || !fatherHusbandName || !permanentAddress || !aadharNumber) {
+    if(!alternativePhoneNumber){
+        alternativePhoneNumber = 0;
+    }
+
+    if (!firstName || !lastName || !dateOfBirth || !gender || !maritalStatus || !nationality || !category || !emailAddress || !phoneNumber || !fatherHusbandName || !permanentAddress || !aadharNumber) {
         return next(new ErrorHandler("Please enter all fields", 400));
+    }
+
+    if(phoneNumber.length !== 10){
+        return next(new ErrorHandler("Please enter a valid Phone Number", 400));
+    }
+
+    if(aadharNumber.length !== 12){
+        return next(new ErrorHandler("Please enter a valid Aadhar Number", 400));
     }
 
     const file = req.file;

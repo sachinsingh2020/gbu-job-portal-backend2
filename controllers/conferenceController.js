@@ -5,11 +5,12 @@ import ErrorHandler from "../utils/errorHandler.js";
 import { User } from "../models/User.js";
 
 export const createNationalConference = catchAsyncError(async (req, res, next) => {
-    const { nameOfConference, whenAndWhere } = req.body;
+    const { nameOfConference, dateOfConference, whereConference } = req.body;
 
     const nationalConference = await NationalConference.create({
         nameOfConference,
-        whenAndWhere,
+        dateOfConference,
+        whereConference,
     });
 
     const user = await User.findById(req.user._id);
@@ -60,11 +61,12 @@ export const deleteNationalConference = catchAsyncError(async (req, res, next) =
 
 
 export const createInterNationalConference = catchAsyncError(async (req, res, next) => {
-    const { nameOfConference, whenAndWhere } = req.body;
+    const { nameOfConference,dateOfConference, whereConference } = req.body;
 
     const interNationalConference = await InterNationalConference.create({
         nameOfConference,
-        whenAndWhere,
+        dateOfConference,
+        whereConference,
     });
 
     const user = await User.findById(req.user._id);

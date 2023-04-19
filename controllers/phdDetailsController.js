@@ -6,9 +6,6 @@ import { User } from "../models/User.js";
 export const createPhdDetails = catchAsyncError(async (req, res, next) => {
     const { phdThesisTitle, researchAreaThesisWork, dateOfJoining, dateOfSubmission, dateOfCompletion, nameOfThesisSupervisor, partTimeFullTime, institutionUniversity } = req.body;
 
-    if (!phdThesisTitle || !researchAreaThesisWork || !dateOfJoining || !dateOfSubmission || !dateOfCompletion || !nameOfThesisSupervisor || !partTimeFullTime || !institutionUniversity) {
-        return next(new ErrorHandler("Please enter all fields", 400));
-    }
 
     const user = await User.findById(req.user._id).populate("userData.phdDetails");
 

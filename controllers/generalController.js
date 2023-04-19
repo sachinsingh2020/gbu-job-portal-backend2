@@ -6,6 +6,10 @@ import { User } from "../models/User.js";
 export const createGeneralDetails = catchAsyncError(async (req, res, next) => {
     const { acceptSalary, mentionPeriod, acceptPosition, medicallyUnfit } = req.body;
 
+    if(!acceptSalary || !mentionPeriod || !acceptPosition || !medicallyUnfit) {
+        return next(new ErrorHandler("Please fill all the fields", 400));
+    }
+
     const user = await User.findById(req.user._id).populate("userData.general");
 
     if (user.userData.general) {

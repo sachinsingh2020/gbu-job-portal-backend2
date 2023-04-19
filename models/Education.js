@@ -3,32 +3,25 @@ import mongoose from "mongoose";
 const graduationSchema = new mongoose.Schema({
     university: {
         type: String,
-        required: [true, "Please enter University Name"],
     },
     specialization: {
         type: String,
-        required: [true, "Please enter Specialization"],
     },
     yearOfPassing: {
         type: Number,
-        required: [true, "Please enter Year of Passing"],
     },
     percentageOfMarks: {
         type: Number,
-        required: [true, "Please enter Percentage of Marks"],
     },
     classGrade: {
         type: String,
-        required: [true, "Please enter Class/Grade"],
     },
     selfAttestedCopy: {
         public_id: {
             type: String,
-            required: true,
         },
         url: {
             type: String,
-            required: true,
         },
     },
     createdAt: {
@@ -40,32 +33,25 @@ const graduationSchema = new mongoose.Schema({
 const postGraduationSchema = new mongoose.Schema({
     university: {
         type: String,
-        required: [true, "Please enter University Name"],
     },
     specialization: {
         type: String,
-        required: [true, "Please enter Specialization"],
     },
     yearOfPassing: {
         type: Number,
-        required: [true, "Please enter Year of Passing"],
     },
     percentageOfMarks: {
         type: Number,
-        required: [true, "Please enter Percentage of Marks"],
     },
     classGrade: {
         type: String,
-        required: [true, "Please enter Class/Grade"],
     },
     selfAttestedCopy: {
         public_id: {
             type: String,
-            required: true,
         },
         url: {
             type: String,
-            required: true,
         },
     },
     createdAt: {
@@ -77,23 +63,18 @@ const postGraduationSchema = new mongoose.Schema({
 const mPhilSchema = new mongoose.Schema({
     university: {
         type: String,
-        required: [true, "Please enter University Name"],
     },
     specialization: {
         type: String,
-        required: [true, "Please enter Specialization"],
     },
     yearOfPassing: {
         type: Number,
-        required: [true, "Please enter Year of Passing"],
     },
     percentageOfMarks: {
         type: Number,
-        required: [true, "Please enter Percentage of Marks"],
     },
     classGrade: {
         type: String,
-        required: [true, "Please enter Class/Grade"],
     },
     selfAttestedCopy: {
         public_id: {
@@ -114,32 +95,25 @@ const mPhilSchema = new mongoose.Schema({
 const phdSchema = new mongoose.Schema({
     university: {
         type: String,
-        required: [true, "Please enter University Name"],
     },
     specialization: {
         type: String,
-        required: [true, "Please enter Specialization"],
     },
     yearOfPassing: {
         type: Number,
-        required: [true, "Please enter Year of Passing"],
     },
     percentageOfMarks: {
         type: Number,
-        required: [true, "Please enter Percentage of Marks"],
     },
     classGrade: {
         type: String,
-        required: [true, "Please enter Class/Grade"],
     },
     selfAttestedCopy: {
         public_id: {
             type: String,
-            required: true,
         },
         url: {
             type: String,
-            required: true,
         },
     },
     createdAt: {

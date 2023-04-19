@@ -5,9 +5,12 @@ const nationalConference = new mongoose.Schema({
         type: String,
         required: [true, "Please enter name of conference"],
     },
-    whenAndWhere:{
+    dateOfConference: {
+        type: Date,
+    },
+    whereConference: {
         type: String,
-        required: [true, "Please enter when and where"],
+        required: [true, "Please enter where"],
     },
     createdAt: {
         type: Date,
@@ -20,9 +23,12 @@ const interNationalConference = new mongoose.Schema({
         type: String,
         required: [true, "Please enter name of conference"],
     },
-    whenAndWhere:{
+    dateOfConference: {
+        type: Date,
+    },
+    whereConference: {
         type: String,
-        required: [true, "Please enter when and where"],
+        required: [true, "Please enter where"],
     },
     createdAt: {
         type: Date,
