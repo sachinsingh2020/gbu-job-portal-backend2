@@ -8,7 +8,7 @@ import { User } from "../models/User.js";
 export const createPersonal = catchAsyncError(async (req, res, next) => {
     let { firstName, lastName, dateOfBirth, gender, maritalStatus, nationality, category, emailAddress, phoneNumber, alternativePhoneNumber, fatherHusbandName, permanentAddress, aadharNumber } = req.body;
 
-    if(!alternativePhoneNumber){
+    if (!alternativePhoneNumber) {
         alternativePhoneNumber = 0;
     }
 
@@ -16,15 +16,18 @@ export const createPersonal = catchAsyncError(async (req, res, next) => {
         return next(new ErrorHandler("Please enter all fields", 400));
     }
 
-    if(phoneNumber.length !== 10){
+    if (phoneNumber.length !== 10) {
         return next(new ErrorHandler("Please enter a valid Phone Number", 400));
     }
 
-    if(aadharNumber.length !== 12){
+    if (aadharNumber.length !== 12) {
         return next(new ErrorHandler("Please enter a valid Aadhar Number", 400));
     }
 
     const file = req.file;
+    if (req.file === undefined) {
+        return next(new ErrorHandler("Please upload a profile picture", 400));
+    }
 
     const fileUri = getDataUri(file);
 

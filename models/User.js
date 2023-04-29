@@ -105,6 +105,10 @@ const schema = new mongoose.Schema({
             ref: "General"
         },
     },
+    isSubmitted: {
+        type: String,
+        default: "false",
+    },
     createdAt: {
         type: Date,
         default: Date.now,

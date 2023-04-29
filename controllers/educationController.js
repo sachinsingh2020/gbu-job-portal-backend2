@@ -15,7 +15,6 @@ export const createEducationGraduation = catchAsyncError(async (req, res, next) 
     const user = await User.findById(req.user._id).populate("userData.education.graduation");
 
     if (req.file) {
-        console.log('upper');
         file = req.file;
 
 
@@ -51,7 +50,6 @@ export const createEducationGraduation = catchAsyncError(async (req, res, next) 
         });
     }
     else {
-        console.log('lower')
 
         if (user.userData.education.graduation) {
             if (user.userData.education.graduation.selfAttestedCopy.public_id) {
@@ -112,7 +110,6 @@ export const createEducationPostGraduation = catchAsyncError(async (req, res, ne
     }
 
     if (req.file) {
-        console.log('upper');
         file = req.file;
 
 
@@ -144,7 +141,6 @@ export const createEducationPostGraduation = catchAsyncError(async (req, res, ne
         });
     }
     else {
-        console.log('lower')
 
         user.userData.education.postGraduation = await PostGraduation.create({
             university,

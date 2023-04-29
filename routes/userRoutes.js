@@ -1,5 +1,5 @@
 import express from 'express';
-import { forgetPassword, getAllUsers, getMyProfile, login, logout, register, resetPassword } from '../controllers/userController.js';
+import { deleteUser, finalSubmission, forgetPassword, getAllUsers, getMyProfile, getTheUserDetails, login, logout, register, resetPassword } from '../controllers/userController.js';
 import { authorizeAdmin, isAuthenticated } from '../middlewares/auth.js';
 
 const router = express.Router();
@@ -17,10 +17,16 @@ router.route('/forgetpassword').post(forgetPassword);
 // Reset Password 
 router.route('/resetpassword/:token').put(resetPassword);
 
+router.route('/finalsubmission/:id').post(finalSubmission);
 
 // ADMIN ROUTES 
 
 // Get All Users
 router.route('/admin/users').get(isAuthenticated, authorizeAdmin, getAllUsers);
+
+router.route('/admin/getuser/:id').get(isAuthenticated, authorizeAdmin, getTheUserDetails);
+
+router.route('/admin/delete/:id').delete(isAuthenticated, authorizeAdmin, deleteUser);
+
 
 export default router;

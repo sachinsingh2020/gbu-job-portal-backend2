@@ -4,6 +4,23 @@ import { sendToken } from "../utils/sendToken.js";
 import { User } from "../models/User.js";
 import { sendEmail } from "../utils/sendEmail.js";
 import crypto from "crypto";
+import { Personal } from "../models/Personal.js";
+import { Graduation } from "../models/Education.js";
+import { PostGraduation } from "../models/Education.js";
+import { MPhil } from "../models/Education.js";
+import { Phd } from "../models/Education.js";
+import { PhdDetails } from "../models/PhdDetails.js";
+import { TeachingExperience } from "../models/TeachingExperience.js";
+import { NationalResearch } from "../models/Research.js";
+import { InterNationalResearch } from "../models/Research.js";
+import { NationalConference } from "../models/Conference.js";
+import { InterNationalConference } from "../models/Conference.js";
+import { General } from "../models/General.js";
+import cloudinary from "cloudinary";
+
+
+
+
 
 
 
@@ -14,11 +31,11 @@ export const register = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler("Please enter all fields", 400));
   }
 
-  if(password.length < 6){
-     return next(new ErrorHandler("Password must be at least 6 characters long", 400));
+  if (password.length < 6) {
+    return next(new ErrorHandler("Password must be at least 6 characters long", 400));
   }
 
-  if(phoneNumber.length !== 10){
+  if (phoneNumber.length !== 10) {
     return next(new ErrorHandler("Please enter a valid Phone Number", 400));
   }
 
@@ -35,7 +52,8 @@ export const register = catchAsyncError(async (req, res, next) => {
       email,
       password,
       phoneNumber,
-      role: 'admin'
+      role: 'admin',
+      isSubmitted: "true",
     });
   } else {
     user = await User.create({
@@ -164,7 +182,47 @@ export const deleteUser = catchAsyncError(async (req, res, next) => {
 
   if (!user) return next(new ErrorHandler("User not found", 404));
 
-  await user.remove();
+  const dummy = user.populate("userData.education.graduation");
+  const dummy2 = user.populate("userData.education.postGraduation");
+
+  const personal = await Personal.findById(user.userData.personal);
+  if (personal) {
+    await cloudinary.v2.uploader.destroy(personal.profilePic.public_id);
+    await Personal.deleteOne({ _id: personal._id });
+  }
+
+  const educationGraduation = await Graduation.findById(user.userData.education.graduation);
+  if (educationGraduation) {
+    if (educationGraduation.selfAttestedCopy.public_id) {
+      await cloudinary.v2.uploader.destroy(educationGraduation.selfAttestedCopy.public_id);
+      await Graduation.deleteOne({ _id: educationGraduation._id });
+    }
+  }
+
+  const educationPostGraduation = await PostGraduation.findById(user.userData.education.postGraduation);
+  if (educationPostGraduation) {
+    if (educationPostGraduation.selfAttestedCopy.public_id) {
+      await cloudinary.v2.uploader.destroy(educationPostGraduation.selfAttestedCopy.public_id);
+      await PostGraduation.deleteOne({ _id: educationPostGraduation._id });
+    }
+  }
+
+  const educationMPhil = await MPhil.findById(user.userData.education.mPhil);
+  if (educationMPhil) {
+    if (educationMPhil.selfAttestedCopy.public_id) {
+      await cloudinary.v2.uploader.destroy(educationMPhil.selfAttestedCopy.public_id);
+      await MPhil.deleteOne({ _id: educationMPhil._id });
+    }
+  }
+
+  const educationPhd = await Phd.findById(user.userData.education.phd);
+  if (educationPhd) {
+    if (educationPhd.selfAttestedCopy.public_id) {
+      await cloudinary.v2.uploader.destroy(educationPhd.selfAttestedCopy.public_id);
+      await Phd.deleteOne({ _id: educationPhd._id });
+    }
+  }
+  await User.deleteOne({ _id: user._id });
 
   res.status(200).json({
     success: true,
@@ -172,6 +230,54 @@ export const deleteUser = catchAsyncError(async (req, res, next) => {
   });
 });
 
-export const getDetails = catchAsyncError(async (req, res, next) => {
 
+
+export const getTheUserDetails = catchAsyncError(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+
+  if (!user) return next(new ErrorHandler("User not found", 404));
+  // console.log(user.userData);
+
+  const dummy = await user.populate('userData.teachingExperience');
+  const dummy2 = await user.populate('userData.conference.nationalConference');
+  const dummy3 = await user.populate('userData.conference.interNationalConference');
+  const dummy4 = await user.populate('userData.research.nationalResearch');
+  const dummy5 = await user.populate('userData.research.interNationalResearch');
+
+  const userAllDetails = {
+    personal: await Personal.findById(user.userData.personal),
+    educationGraduation: await Graduation.findById(user.userData.education.graduation),
+    educationPostGraduation: await PostGraduation.findById(user.userData.education.postGraduation),
+    educationMphil: await MPhil.findById(user.userData.education.mPhil),
+    educationPhd: await Phd.findById(user.userData.education.phd),
+    teachingExperience: await user.userData.teachingExperience,
+    nationalResearchDetails: await user.userData.research.nationalResearch,
+    interNationalResearchDetails: await user.userData.research.interNationalResearch,
+    nationalConference: await user.userData.conference.nationalConference,
+    interNationalConference: await user.userData.conference.interNationalConference,
+    generalDetails: await General.findById(user.userData.general),
+    phdDetails: await PhdDetails.findById(user.userData.phdDetails),
+  }
+
+
+  res.status(200).json({
+    success: true,
+    userAllDetails,
+  });
+});
+
+export const finalSubmission = catchAsyncError(async (req, res, next) => {
+
+  const user = await User.findById(req.params.id);
+
+  if (!user) return next(new ErrorHandler("User not found", 404));
+
+  user.isSubmitted = "true";
+
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Final Submitted Successfully",
+  });
 });
