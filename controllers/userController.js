@@ -113,6 +113,7 @@ export const getMyProfile = catchAsyncError(async (req, res, next) => {
 });
 
 export const forgetPassword = catchAsyncError(async (req, res, next) => {
+
   const { email } = req.body;
 
   const user = await User.findOne({ email });
@@ -279,5 +280,108 @@ export const finalSubmission = catchAsyncError(async (req, res, next) => {
   res.status(200).json({
     success: true,
     message: "Final Submitted Successfully",
+  });
+});
+
+
+export const reSubmitForm = catchAsyncError(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  if (!user) return next(new ErrorHandler("User not found", 404));
+
+
+  const dummy = user.populate("userData.education.graduation");
+  const dummy2 = user.populate("userData.education.postGraduation");
+  const dummy3 = user.populate("userData.education.mPhil");
+  const dummy4 = user.populate("userData.education.phd");
+
+
+  const educationGraduation = await Graduation.findById(user.userData.education.graduation);
+  if (educationGraduation) {
+    if (educationGraduation.selfAttestedCopy.public_id) {
+      await cloudinary.v2.uploader.destroy(educationGraduation.selfAttestedCopy.public_id);
+      await Graduation.deleteOne({ _id: educationGraduation._id });
+    }
+  }
+
+  const educationPostGraduation = await PostGraduation.findById(user.userData.education.postGraduation);
+  if (educationPostGraduation) {
+    if (educationPostGraduation.selfAttestedCopy.public_id) {
+      await cloudinary.v2.uploader.destroy(educationPostGraduation.selfAttestedCopy.public_id);
+      await PostGraduation.deleteOne({ _id: educationPostGraduation._id });
+    }
+  }
+
+  const educationMPhil = await MPhil.findById(user.userData.education.mPhil);
+  if (educationMPhil) {
+    if (educationMPhil.selfAttestedCopy.public_id) {
+      await cloudinary.v2.uploader.destroy(educationMPhil.selfAttestedCopy.public_id);
+      await MPhil.deleteOne({ _id: educationMPhil._id });
+    }
+  }
+
+  const educationPhd = await Phd.findById(user.userData.education.phd);
+  if (educationPhd) {
+    if (educationPhd.selfAttestedCopy.public_id) {
+      await cloudinary.v2.uploader.destroy(educationPhd.selfAttestedCopy.public_id);
+      await Phd.deleteOne({ _id: educationPhd._id });
+    }
+  }
+
+  const teachingExperience = user.userData.teachingExperience;
+  await Promise.all(teachingExperience.map(async (teaching) => {
+    await TeachingExperience.findByIdAndDelete(teaching._id);
+    user.userData.teachingExperience.pull(teaching._id);
+  }));
+
+  const nationalResearchDetails = user.userData.research.nationalResearch;
+  await Promise.all(nationalResearchDetails.map(async (nationalResearch) => {
+    await NationalResearch.findByIdAndDelete(nationalResearch._id);
+    user.userData.research.nationalResearch.pull(nationalResearch._id);
+  }));
+
+  const interNationalResearchDetails = user.userData.research.interNationalResearch;
+  // console.log(interNationalResearchDetails)
+  await Promise.all(interNationalResearchDetails.map(async (interNationalResearch) => {
+    await InterNationalResearch.findByIdAndDelete(interNationalResearch._id);
+    user.userData.research.interNationalResearch.pull(interNationalResearch._id);
+  }));
+
+  const nationalConference = user.userData.conference.nationalConference;
+  // console.log(nationalConference);
+  await Promise.all(nationalConference.map(async (nationalConference) => {
+    await NationalConference.findByIdAndDelete(nationalConference._id);
+    user.userData.conference.nationalConference.pull(nationalConference._id);
+  }));
+
+  const interNationalConference = user.userData.conference.interNationalConference;
+  // console.log(interNationalConference);
+  await Promise.all(interNationalConference.map(async (interNationalConference) => {
+    await InterNationalConference.findByIdAndDelete(interNationalConference._id);
+    user.userData.conference.interNationalConference.pull(interNationalConference._id);
+  }));
+
+  if (user.isSubmitted === "true") {
+    user.isSubmitted = "false";
+  }
+
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Resubmit form again",
+  });
+})
+
+export const changeIsSubmitted = catchAsyncError(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  if (!user) return next(new ErrorHandler("User not found", 404));
+
+  user.isSubmitted = "false";
+
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Redirected to Home Page",
   });
 });
